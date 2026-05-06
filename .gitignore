@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+hs_err_pid*
+replay_pid*
+
+# Runtime logs / pid files
+.run/

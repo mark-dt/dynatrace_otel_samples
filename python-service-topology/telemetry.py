@@ -4,6 +4,10 @@ import logging
 import os
 from typing import Mapping, Sequence
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 import requests
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
