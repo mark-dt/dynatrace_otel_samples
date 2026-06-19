@@ -10,7 +10,6 @@ Sample applications instrumented with OpenTelemetry, exporting telemetry to Dyna
 | [python-otel-full](python-otel-full/) | Python / Flask | Two-service topology (service A + B) with full OTel: traces, metrics (delta temporality), and logs via OTLP/HTTP |
 | [java-spring-boot](java-spring-boot/) | Java / Spring Boot | Single-process Spring Boot app with three simulated service endpoints and a load generator |
 | [java-micrometer-otlp](java-micrometer-otlp/) | Java / Spring Boot | Micrometer metrics exported to Dynatrace via OTLP/HTTP with delta temporality |
-| [otel-order-trace-simulator](otel-order-trace-simulator/) | Python | Generates simulated order traces and exports them via OTLP (uses the repo-root `.env`) |
 
 ## Configuration
 
@@ -31,7 +30,7 @@ See each sample's `.env.example` for sample-specific variables.
 
 ## Running each sample
 
-Run these from the repo root. Each script loads its `.env` (the simulator uses the repo-root `.env`) and starts the service together with its load generator.
+Run these from the repo root. Each script loads its `.env` and starts the service together with its load generator.
 
 **java-micrometer-otlp** — Spring Boot app on `:8080`
 ```bash
@@ -41,11 +40,6 @@ cd java-micrometer-otlp && ./run.sh
 **java-spring-boot** — Spring Boot app on `:8080`
 ```bash
 cd java-spring-boot && cp ../.env .env && mvn -q package -DskipTests && ./run-java.sh
-```
-
-**otel-order-trace-simulator** — trace emitter (no HTTP server)
-```bash
-cd otel-order-trace-simulator && ./run.sh
 ```
 
 **python-otel-full** — services on `:5000` / `:5001`
