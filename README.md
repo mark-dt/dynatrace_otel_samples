@@ -9,6 +9,8 @@ Sample applications instrumented with OpenTelemetry, exporting telemetry to Dyna
 | [python-service-topology](python-service-topology/) | Python / Flask | Two-service topology (frontend + inventory) with manual OTel traces sent via OTLP/HTTP |
 | [python-otel-full](python-otel-full/) | Python / Flask | Two-service topology (service A + B) with full OTel: traces, metrics (delta temporality), and logs via OTLP/HTTP |
 | [java-spring-boot](java-spring-boot/) | Java / Spring Boot | Single-process Spring Boot app with three simulated service endpoints and a load generator |
+| [java-micrometer-otlp](java-micrometer-otlp/) | Java / Spring Boot | Micrometer metrics exported to Dynatrace via OTLP/HTTP with delta temporality |
+| [otel-order-trace-simulator](otel-order-trace-simulator/) | Python | Generates simulated order traces and exports them via OTLP (uses the repo-root `.env`) |
 
 ## Configuration
 
@@ -18,7 +20,7 @@ All samples use a `.env` file for configuration. Each directory contains a `.env
 cp <sample-dir>/.env.example <sample-dir>/.env
 ```
 
-Common variables across the Python samples:
+Common variables across all samples:
 
 | Variable | Description |
 |----------|-------------|
@@ -27,18 +29,33 @@ Common variables across the Python samples:
 
 See each sample's `.env.example` for sample-specific variables.
 
-## Quick start
+## Running each sample
 
+Run these from the repo root. Each script loads its `.env` (the simulator uses the repo-root `.env`) and starts the service together with its load generator.
+
+**java-micrometer-otlp** — Spring Boot app on `:8080`
 ```bash
-# Pick a sample
-cd python-service-topology
-
-# Configure
-cp .env.example .env
-# Edit .env with your Dynatrace environment URL and token
-
-# Install and run
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-./start_all.sh
+cd java-micrometer-otlp && ./run.sh
 ```
+
+**java-spring-boot** — Spring Boot app on `:8080`
+```bash
+cd java-spring-boot && cp ../.env .env && mvn -q package -DskipTests && ./run-java.sh
+```
+
+**otel-order-trace-simulator** — trace emitter (no HTTP server)
+```bash
+cd otel-order-trace-simulator && ./run.sh
+```
+
+**python-otel-full** — services on `:5000` / `:5001`
+```bash
+cd python-otel-full && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && ./start_all.sh
+```
+
+**python-service-topology** — frontend `:8000` / inventory `:8001`
+```bash
+cd python-service-topology && cp ../python-otel-full/.env .env && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && ./start_all.sh
+```
+
+> Both Java samples bind port `8080`, so don't run them at the same time.
