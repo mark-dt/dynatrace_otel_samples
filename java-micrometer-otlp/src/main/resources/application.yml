@@ -1,0 +1,23 @@
+debug: true
+logging:
+  level:
+    io.micrometer.registry.otlp: DEBUG
+    io.micrometer.registry.otlp.OtlpHttpMetricsSender: TRACE
+
+management:
+  otlp:
+    metrics:
+      export:
+        enabled: true
+        url: "${DT_API_URL}/v1/metrics"
+        headers:
+          Authorization: "Api-Token ${DT_API_TOKEN}"
+        aggregation-temporality: delta
+        step: 15s
+        resourceAttributes:
+          service.name: "spring-otlp-demo"
+
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,conditions"
