@@ -7,13 +7,17 @@ Two Python Flask services instrumented with OpenTelemetry, exporting traces, met
 
 ## Setup
 
+First create your `.env`:
+
 ```bash
 cp .env.example .env
-# Edit .env with your DT_API_URL and DT_API_TOKEN
+# Edit .env with your DT_API_URL (ending in /api/v2/otlp) and DT_API_TOKEN
+```
 
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-./start_all.sh
+Then run everything with a single command from this directory:
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && ./start_all.sh
 ```
 
 `run_load_gen.py` starts both services and sends requests to `/trigger`.

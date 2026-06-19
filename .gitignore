@@ -226,5 +226,23 @@ target/
 hs_err_pid*
 replay_pid*
 
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.settings/
+.classpath
+.project
+.factorypath
+
+# VS Code
+.vscode/
+
 # Runtime logs / pid files
 .run/
+
+# Local-only samples (not published)
+otel-order-trace-simulator/
