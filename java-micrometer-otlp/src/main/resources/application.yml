@@ -4,7 +4,24 @@ logging:
     io.micrometer.registry.otlp: DEBUG
     io.micrometer.registry.otlp.OtlpHttpMetricsSender: TRACE
 
+spring:
+  application:
+    # Drives service.name on the OTLP resource. Boot 4 no longer reads
+    # management.otlp.metrics.export.resourceAttributes.
+    name: spring-otlp-demo
+
 management:
+  # Registers TimedAspect so @Timed is honoured. Off by default in Boot 4.
+  observations:
+    annotations:
+      enabled: true
+
+  # Resource attributes for both the Micrometer OTLP registry and the OTel SDK.
+  # DynatraceMetadata adds the OneAgent enrichment keys here at startup.
+  opentelemetry:
+    resource-attributes:
+      service.version: "1.0.0"
+
   otlp:
     metrics:
       export:
@@ -14,8 +31,6 @@ management:
           Authorization: "Api-Token ${DT_API_TOKEN}"
         aggregation-temporality: delta
         step: 15s
-        resourceAttributes:
-          service.name: "spring-otlp-demo"
 
   endpoints:
     web:

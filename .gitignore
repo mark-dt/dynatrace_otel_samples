@@ -246,3 +246,6 @@ replay_pid*
 
 # Local-only samples (not published)
 otel-order-trace-simulator/
+
+# OneAgent enrichment indirection file (real one is written by OneAgent, or faked for local tests)
+dt_metadata_e617c525669e072eebe3d0f08212e8f2.*
