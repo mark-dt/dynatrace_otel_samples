@@ -2,15 +2,19 @@ package dev.example;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class DemoApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(DemoApplication.class, args);
+    // The OneAgent metadata has to be in the Environment before the OTLP registry is built,
+    // so read it here rather than from a bean.
+    new SpringApplicationBuilder(DemoApplication.class)
+        .properties(DynatraceMetadata.asSpringProperties())
+        .run(args);
   }
 
   @Bean
