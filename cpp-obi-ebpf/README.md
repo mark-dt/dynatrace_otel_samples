@@ -132,6 +132,27 @@ route) and 500s (an injected pricing failure), so error rates are not flat zero.
 > underscore between `status` and `code`. `http.response.status.code` silently
 > matches nothing.
 
+`pricing-api` with the usual RED charts, and both endpoints broken out — `GET
+/price` carrying the injected failures and `GET /nope` the deliberate bad route:
+
+![pricing-api response time, throughput, failure rate and HTTP errors in Dynatrace](img/service-red-metrics.png)
+
+Nothing here is specific to eBPF: the service looks and behaves exactly like one
+reported by an SDK or OneAgent.
+
+### Two services, not one
+
+Because both binaries are instrumented, the service map shows the real call
+direction rather than an anonymous downstream:
+
+![Service map showing pricing-api calling inventory-api](img/service-map.png)
+
+The `Properties` tab is where the instrumentation method shows through —
+`telemetry.sdk.language: cpp` is OBI reporting a native binary, and it is the
+quickest confirmation that the data really came from the eBPF probes:
+
+![pricing-api properties showing telemetry.sdk.language cpp](img/service-properties-cpp.png)
+
 ### Why the trace spans two processes
 
 `ebpf.context_propagation: all` in the config. Without it, pricing-api's client
