@@ -24,8 +24,6 @@ management:
           Authorization: "Api-Token ${DT_API_TOKEN}"
         aggregation-temporality: delta
         step: 5s
-        resourceAttributes:
-          service.name: "${spring.application.name}"
     # ---- TRACES ----
     tracing:
       endpoint: "${DT_API_URL}/v1/traces"
