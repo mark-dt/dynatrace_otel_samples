@@ -1,0 +1,5 @@
+bin/
+obi-config.yaml
+*.o
+*.log
+run/

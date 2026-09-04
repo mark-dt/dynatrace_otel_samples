@@ -11,6 +11,7 @@ Sample applications instrumented with OpenTelemetry, exporting telemetry to Dyna
 | [java-spring-boot](java-spring-boot/) | Java / Spring Boot | Single-process Spring Boot app with three simulated service endpoints and a load generator |
 | [java-micrometer-otlp](java-micrometer-otlp/) | Java / Spring Boot | Micrometer metrics exported to Dynatrace via OTLP/HTTP with delta temporality, enriched with OneAgent metadata |
 | [java-spring-boot-otel-full](java-spring-boot-otel-full/) | Java / Spring Boot | Two-service topology (service A + B) with full OTel: traces, metrics (delta temporality), and logs via OTLP/HTTP |
+| [cpp-obi-ebpf](cpp-obi-ebpf/) | C++ / eBPF | Two native C++ services with **no SDK at all**, instrumented from outside by OpenTelemetry eBPF Instrumentation (OBI): traces + RED metrics. **Linux only** |
 
 ## Configuration
 
@@ -26,6 +27,8 @@ Common variables across all samples:
 |----------|-------------|
 | `DT_API_URL` | Dynatrace OTLP endpoint, e.g. `https://<env-id>.live.dynatrace.com/api/v2/otlp` |
 | `DT_API_TOKEN` | API token with `openTelemetryTrace.ingest`, `metrics.ingest`, `logs.ingest` scopes |
+
+`cpp-obi-ebpf` does not ingest logs, so `openTelemetryTrace.ingest` and `metrics.ingest` are enough for it.
 
 See each sample's `.env.example` for sample-specific variables.
 
@@ -54,9 +57,18 @@ cd java-spring-boot-otel-full && cp .env.example .env  # edit .env, then:
 cd python-otel-full && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && ./start_all.sh
 ```
 
+**cpp-obi-ebpf** — pricing `:8083` / inventory `:8082` — **Linux only** (eBPF)
+```bash
+cd cpp-obi-ebpf && cp .env.example .env  # edit .env, then:
+make check build install-obi config run
+make obi                                 # second terminal, needs sudo
+```
+
 **python-service-topology** — frontend `:8000` / inventory `:8001`
 ```bash
 cd python-service-topology && cp ../python-otel-full/.env .env && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && ./start_all.sh
 ```
 
 > `java-micrometer-otlp`, `java-spring-boot`, and `java-spring-boot-otel-full` (service-a) all bind port `8080`, so don't run them at the same time.
+
+> `cpp-obi-ebpf` needs a Linux kernel 5.8+ with BTF and root privileges — it instruments processes with eBPF rather than linking an SDK. On macOS, run it inside a Linux VM; see that sample's README.

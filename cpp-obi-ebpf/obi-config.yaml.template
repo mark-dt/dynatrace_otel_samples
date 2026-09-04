@@ -1,0 +1,53 @@
+# OBI configuration for the cpp-obi-ebpf sample.
+#
+# This is the TEMPLATE. `make config` substitutes the placeholders and writes
+# obi-config.yaml, which is gitignored because it ends up holding no secrets but
+# does hold your tenant URL. Edit this file, not the generated one.
+#
+# The token is NOT here on purpose: it is passed to OBI as
+# OTEL_EXPORTER_OTLP_HEADERS by the run scripts, so this file stays safe to read
+# and share.
+
+log_level: info
+
+# OBI selects processes by absolute executable path. Both services are
+# instrumented, which is what produces a two-service topology in Dynatrace
+# rather than one service with an anonymous downstream.
+discovery:
+  instrument:
+    - exe_path: __BIN_DIR__/pricing-api
+      name: pricing-api
+      namespace: cpp-obi-ebpf
+    - exe_path: __BIN_DIR__/inventory-api
+      name: inventory-api
+      namespace: cpp-obi-ebpf
+
+# Without this, pricing-api's client span and inventory-api's server span end up
+# in two unrelated traces. OBI injects and reads the traceparent header itself —
+# neither C++ program knows anything about it.
+ebpf:
+  context_propagation: all
+
+# NOTE the explicit /v1/traces and /v1/metrics. OBI uses these endpoints
+# VERBATIM; unlike the base OTEL_EXPORTER_OTLP_ENDPOINT convention it does NOT
+# append the signal path for you. Pointing both at a bare .../api/v2/otlp
+# returns 404 on every export — and OBI logs that at level=INFO, so it is easy
+# to miss. See the Troubleshooting section of the README.
+otel_traces_export:
+  endpoint: __DT_API_URL__/v1/traces
+  protocol: http/protobuf
+
+otel_metrics_export:
+  endpoint: __DT_API_URL__/v1/metrics
+  protocol: http/protobuf
+  interval: 30s
+  # `application` is the RED metric set. `application_span` also exists but is
+  # deprecated in favour of `application_span_otel`, and only duplicates traces.
+  features:
+    - application
+
+# Local debug aid: the same metrics in Prometheus format on 127.0.0.1:8999.
+# Answers "is OBI generating data?" without involving the tenant at all.
+prometheus_export:
+  port: 8999
+  path: /metrics
