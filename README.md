@@ -10,6 +10,7 @@ Sample applications instrumented with OpenTelemetry, exporting telemetry to Dyna
 | [python-otel-full](python-otel-full/) | Python / Flask | Two-service topology (service A + B) with full OTel: traces, metrics (delta temporality), and logs via OTLP/HTTP |
 | [java-spring-boot](java-spring-boot/) | Java / Spring Boot | Single-process Spring Boot app with three simulated service endpoints and a load generator |
 | [java-micrometer-otlp](java-micrometer-otlp/) | Java / Spring Boot | Micrometer metrics exported to Dynatrace via OTLP/HTTP with delta temporality, enriched with OneAgent metadata |
+| [java-spring-boot-otel-full](java-spring-boot-otel-full/) | Java / Spring Boot | Two-service topology (service A + B) with full OTel: traces, metrics (delta temporality), and logs via OTLP/HTTP |
 
 ## Configuration
 
@@ -42,6 +43,12 @@ cd java-micrometer-otlp && ./run.sh
 cd java-spring-boot && cp ../.env .env && mvn -q package -DskipTests && ./run-java.sh
 ```
 
+**java-spring-boot-otel-full** — services on `:8080` / `:8081`
+```bash
+cd java-spring-boot-otel-full && cp .env.example .env  # edit .env, then:
+./start_all.sh
+```
+
 **python-otel-full** — services on `:5000` / `:5001`
 ```bash
 cd python-otel-full && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && ./start_all.sh
@@ -52,4 +59,4 @@ cd python-otel-full && python3 -m venv .venv && source .venv/bin/activate && pip
 cd python-service-topology && cp ../python-otel-full/.env .env && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && ./start_all.sh
 ```
 
-> Both Java samples bind port `8080`, so don't run them at the same time.
+> `java-micrometer-otlp`, `java-spring-boot`, and `java-spring-boot-otel-full` (service-a) all bind port `8080`, so don't run them at the same time.

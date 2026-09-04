@@ -1,0 +1,47 @@
+spring:
+  application:
+    # Overridden per process by the run scripts (service-a / service-b).
+    # Becomes the OTel service.name resource attribute for traces and logs.
+    name: ${SPRING_APPLICATION_NAME:spring-otel-full}
+
+management:
+  # Sample every trace (matches the python sample's ALWAYS_ON sampler).
+  tracing:
+    sampling:
+      probability: 1.0
+
+  opentelemetry:
+    resource-attributes:
+      service.version: "1.0.1"
+      dt.cost.product: "service_topology"
+
+  otlp:
+    # ---- METRICS (delta temporality, required by Dynatrace) ----
+    metrics:
+      export:
+        url: "${DT_API_URL}/v1/metrics"
+        headers:
+          Authorization: "Api-Token ${DT_API_TOKEN}"
+        aggregation-temporality: delta
+        step: 5s
+        resourceAttributes:
+          service.name: "${spring.application.name}"
+    # ---- TRACES ----
+    tracing:
+      endpoint: "${DT_API_URL}/v1/traces"
+      headers:
+        Authorization: "Api-Token ${DT_API_TOKEN}"
+    # ---- LOGS ----
+    logging:
+      endpoint: "${DT_API_URL}/v1/logs"
+      headers:
+        Authorization: "Api-Token ${DT_API_TOKEN}"
+
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+
+logging:
+  level:
+    root: INFO
