@@ -162,8 +162,6 @@ exists.
 
 ## Troubleshooting
 
-Each of these cost real time to find. They are all silent failures.
-
 **OBI starts, reports nothing.** Config keys are not validated. OBI accepts
 unknown keys with no warning, no error and a clean startup — a typo is
 indistinguishable from a working setting. Do not trust the config; confirm the
