@@ -17,6 +17,9 @@ modified, recompiled, relinked or even restarted.
 Both are instrumented, which is what gives you a real two-service topology in
 Dynatrace rather than one service with an anonymous downstream.
 
+> **Just want to point OBI at your own app?** [QUICKSTART.md](QUICKSTART.md) is
+> five steps with no explanation of how any of it works.
+
 ## Requirements
 
 OBI is eBPF, so this sample is **Linux only**:
